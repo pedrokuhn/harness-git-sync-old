@@ -41,7 +41,7 @@ volumes:
     path: /tmp
 ---
 kind: pipeline
-type: docker
+type: kubernetes
 name: upload
 
 steps:
