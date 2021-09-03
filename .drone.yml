@@ -1,13 +1,67 @@
+# kind: pipeline
+# type: kubernetes
+# name: default
+# steps:
+#   - name: build
+#     image: node
+#     commands:
+#     - npm -v
+#     when:
+#       branch:
+#       - main
+#       event:
+#       - push
+
 kind: pipeline
 type: kubernetes
-name: default
+name: build PR
+
 steps:
-  - name: build
-    image: node
-    commands:
-    - npm -v
-    when:
-      branch:
-      - main
-      event:
-      - push
+- name: Build
+  image: docker
+  volumes:
+  - name: cache
+    path: /tmp/build
+  commands:  
+  - echo "first pipeline" > /tmp/build/first.txt
+  when:
+    event:
+    - pull_request
+    - push  
+
+trigger:
+  event:
+  - push
+  - pull_request
+
+volumes:
+- name: cache
+  host:
+    path: /tmp
+---
+kind: pipeline
+type: docker
+name: upload
+
+steps:
+ - name: Upload abc
+   image: docker
+   volumes:
+    - name: cache
+      path: /tmp/build
+   commands: 
+   - cat /tmp/build/first.txt
+   when:
+     branch:
+     - main
+     event:
+     - push   
+   
+trigger:
+  event:
+  - push
+  
+volumes:
+- name: cache
+  host:
+    path: /tmp
