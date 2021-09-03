@@ -3,7 +3,11 @@ type: kubernetes
 name: default
 steps:
   - name: build
-    image: golang
+    image: node
     commands:
-    - go build
-    - go test
+    - npm -v
+    when:
+      branch:
+      - main
+      event:
+      - push
