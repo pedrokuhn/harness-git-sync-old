@@ -85,7 +85,4 @@ pipeline:
                             - AllErrors
                         action:
                             type: StageRollback
-              variables:
-                  - name: delegate_tag
-                    type: String
-                    value: ""
+              variables: []
