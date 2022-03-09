@@ -85,4 +85,7 @@ pipeline:
                             - AllErrors
                         action:
                             type: StageRollback
-              variables: []
+              variables:
+                  - name: custom_tag
+                    type: String
+                    value: ""
