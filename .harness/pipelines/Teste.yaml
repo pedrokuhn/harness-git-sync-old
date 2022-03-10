@@ -1,0 +1,91 @@
+pipeline:
+    name: Teste
+    identifier: Teste
+    allowStageExecutions: false
+    projectIdentifier: Git_Experience
+    orgIdentifier: default
+    tags: {}
+    stages:
+        - stage:
+              name: Rolling Deploy
+              identifier: Rolling_Deploy
+              description: ""
+              type: Deployment
+              spec:
+                  serviceConfig:
+                      serviceRef: Test_Service
+                      serviceDefinition:
+                          type: Kubernetes
+                          spec:
+                              variables: []
+                              manifests:
+                                  - manifest:
+                                        identifier: BasicManifest
+                                        type: K8sManifest
+                                        spec:
+                                            store:
+                                                type: Github
+                                                spec:
+                                                    connectorRef: account.tres
+                                                    gitFetchType: Branch
+                                                    paths:
+                                                        - /deployment (2).yaml
+                                                    repoName: pedrokuhn/harness-git-sync-new
+                                                    branch: t27885
+                                            skipResourceVersioning: false
+                                  - manifest:
+                                        identifier: Values
+                                        type: Values
+                                        spec:
+                                            store:
+                                                type: Github
+                                                spec:
+                                                    connectorRef: account.tres
+                                                    gitFetchType: Branch
+                                                    paths:
+                                                        - /values (2).yaml
+                                                    repoName: pedrokuhn/harness-git-sync-new
+                                                    branch: t27885
+                              artifacts:
+                                  primary:
+                                      spec:
+                                          connectorRef: Docker
+                                          imagePath: library/nginx
+                                          tag: <+input>
+                                      type: DockerRegistry
+                  infrastructure:
+                      environmentRef: stg
+                      infrastructureDefinition:
+                          type: KubernetesDirect
+                          spec:
+                              connectorRef: New_k8s_provider
+                              namespace: test
+                              releaseName: release-<+INFRA_KEY>
+                      allowSimultaneousDeployments: false
+                  execution:
+                      steps:
+                          - step:
+                                name: Rollout Deployment
+                                identifier: rolloutDeployment
+                                type: K8sRollingDeploy
+                                timeout: 10m
+                                spec:
+                                    skipDryRun: false
+                      rollbackSteps:
+                          - step:
+                                name: Rollback Rollout Deployment
+                                identifier: rollbackRolloutDeployment
+                                type: K8sRollingRollback
+                                timeout: 10m
+                                spec: {}
+              tags: {}
+              failureStrategies:
+                  - onFailure:
+                        errors:
+                            - AllErrors
+                        action:
+                            type: StageRollback
+              variables:
+                  - name: custom_tag
+                    type: String
+                    value: ""
