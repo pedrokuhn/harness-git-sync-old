@@ -1,0 +1,23 @@
+connector:
+  name: projectAccountGit
+  identifier: projectAccountGit
+  description:
+  orgIdentifier: default
+  projectIdentifier: Git_Experience
+  type: Github
+  spec:
+    url: https://github.com
+    validationRepo: pedrokuhn/harness-istio-tcp-lab
+    authentication:
+      type: Http
+      spec:
+        type: UsernameToken
+        spec:
+          username: pedrokuhn
+          tokenRef: account.GitHubToken
+    apiAccess:
+      type: Token
+      spec:
+        tokenRef: account.GitHubToken
+    executeOnDelegate: true
+    type: Account
