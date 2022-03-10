@@ -1,0 +1,21 @@
+inputSet:
+  identifier: "Stable"
+  pipeline:
+    identifier: "Teste"
+    stages:
+    - stage:
+        identifier: "Rolling_Deploy"
+        type: "Deployment"
+        spec:
+          serviceConfig:
+            serviceDefinition:
+              type: "Kubernetes"
+              spec:
+                artifacts:
+                  primary:
+                    type: "DockerRegistry"
+                    spec:
+                      tag: "stable-perl"
+  name: "Stable"
+  orgIdentifier: "default"
+  projectIdentifier: "Git_Experience"
