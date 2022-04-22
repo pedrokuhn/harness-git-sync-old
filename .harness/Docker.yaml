@@ -1,7 +1,6 @@
 connector:
   name: Docker
   identifier: Docker
-  description:
   orgIdentifier: default
   projectIdentifier: Git_Experience
   type: DockerRegistry
